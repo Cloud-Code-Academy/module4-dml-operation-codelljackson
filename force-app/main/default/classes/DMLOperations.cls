@@ -17,7 +17,7 @@
  * The methods within this class serve as practical examples of different DML operations,
  * allowing developers to learn through practice and examples.
  *
- * @author Your Name
+ * @author Codell L. Jackson
  */
 
 
@@ -30,14 +30,18 @@ public with sharing class DMLOperations {
      * @return The Id of the newly created Account.
      */
     public static Id insertNewAccount() {
-        // Create a new Account instance
+        Account myAccount = new Account();// Create a new Account instance
+        myAccount.Name = 'Codell Account'; 
 
-        // Set some fields on the Account
+        myAccount.Industry = 'Technology';// Set some fields on the Account
+        myAccount.Phone = '404-777-9311';
+        myAccount.BillingStreet = 'Jackson Street'; 
+        myAccount.BillingCity = 'Atlanta';
 
-        // Insert the Account into the database
+        insert myAccount; // Insert the Account into the database
 
         // Return the Id of the newly created Account
-        return null;
+        return myAccount.id;
     }
 
     /**
@@ -47,9 +51,10 @@ public with sharing class DMLOperations {
      * @param industry The industry of the account to be created.
      */
     public static void createAccount(String name, String industry) {
-        // Create a new Account and set the fields inline
 
-        // Insert the Account
+        Account myAccount = new Account (Name = name, Industry = industry);// Create a new Account and set the fields inline
+        
+        insert myAccount;// Insert the Account
     }
 
     
@@ -60,15 +65,18 @@ public with sharing class DMLOperations {
      * @return The Id of the newly created Contact.
      */
     public static Id insertNewContact(Id accountId) {
-        // Create a new Contact instance
+        
+        Contact myContact = new Contact(); // Create a new Contact instance
 
-        // Set some fields on the Contact
-        // Set the AccountId field to the given accountId
+        myContact.FirstName = 'Denise'; // Set some fields on the Contact
+        myContact.LastName = 'Black';
+        myContact.HomePhone = '205-777-9311';
 
-        // Insert the Contact into the database
+        myContact.AccountId = accountId;// Set the AccountId field to the given accountId
 
-        // Return the Id of the newly created Contact
-        return null;
+        insert myContact;// Insert the Contact into the database
+
+        return myContact.Id;// Return the Id of the newly created Contact
     }
 
     /**
