@@ -3,5 +3,10 @@
     "**/node_modules": true,
     "**/bower_components": true,
     "**/.sfdx": true
-  }
+  },
+  "salesforce.einsteinForDevelopers.enable": false,
+  "salesforce.einsteinForDevelopers.enableAutocompletions": false,
+  "salesforce.einsteinForDevelopers.enableAutocompletionsSleepModeMonitoring": false,
+  "salesforce.einsteinForDevelopers.enableInlineIndicatorForAutocomplete": false,
+  "salesforce.einsteinForDevelopers.enableRetrieval-AugmentedGeneration": false
 }
