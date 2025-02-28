@@ -87,12 +87,12 @@ public with sharing class DMLOperations {
      * @param newLastName The new last name for the Contact.
      */
     public static void updateContactLastName(Id contactId, String newLastName) {
-        // Retrieve the Contact from the database
-        // [SELECT Id FROM Contact WHERE Id = :contactId]
+        
+        Contact contactRecord = [SELECT Id, LastName FROM Contact WHERE Id = : contactId LIMIT 1]; // Retrieve the Contact from the database// [SELECT Id FROM Contact WHERE Id = :contactId]
+        
+        contactRecord.LastName = newLastName;  // Update the Contact's last name
 
-        // Update the Contact's last name
-
-        // Update the Contact in the database
+        update contactRecord; // Update the Contact in the database 
     }
 
     /**
@@ -103,12 +103,12 @@ public with sharing class DMLOperations {
      * @param newStage The new stage for the Opportunity.
      */
     public static void updateOpportunityStage(Id oppId, String newStage) {
-        // Retrieve the Opportunity from the database
-        // [SELECT Id FROM Opportunity WHERE Id = :oppId]
+        
+        Opportunity oppRecord = [SELECT Id, StageName FROM Opportunity WHERE Id = : oppId LIMIT 1]; // Retrieve the Opportunity from the database// [SELECT Id FROM Opportunity WHERE Id = :oppId]
+        
+        oppRecord.StageName = newStage; // Update the Opportunity's stage
 
-        // Update the Opportunity's stage
-
-        // Update the Opportunity in the database
+        update oppRecord; // Update the Opportunity in the database
     }
 
     /**
@@ -120,10 +120,14 @@ public with sharing class DMLOperations {
      * @param newIndustry The new industry for the account.
      */
     public static void updateAccountFields(Id accountId, String newName, String newIndustry) {
-        // Query the account
-        // [SELECT Id FROM Account WHERE Id = :accountId]
+        
+        Account accRecord = [SELECT Id, Name FROM Account WHERE Id = : accountId LIMIT 1]; // Query the account // [SELECT Id FROM Account WHERE Id = :accountId]
+        
+        accRecord.Name = newName;
+        accRecord.Industry = newIndustry;
 
-        // Update the Account with the given Id with the new name and industry
+        update accRecord;// Update the Account with the given Id with the new name and industry
+        
     }
 
 
@@ -136,13 +140,15 @@ public with sharing class DMLOperations {
      * @param list of Opportunities to be changed then upserted.
      */
     public static void upsertOpportunityList(List<Opportunity> opportunities) {
-        // Loop through each Opportunity in the list
-            // Set the Opportunity's Stage to Qualification
-            // Set the Opportunity's Close Date to 3 months from today
-            // Set the Opportunity's Amount to 50000
-        // Upsert the opportunities List so that records are either updated or created
-    }
 
+        for (Opportunity myOpportunity : opportunities) {// Loop through each Opportunity in the list
+            
+        myOpportunity.StageName = 'Qualification'; // Set the Opportunity's Stage to Qualification
+        myOpportunity.CloseDate = Date.today().addMonths(3);// Set the Opportunity's Close Date to 3 months from today
+        myOpportunity.Amount = 50000;// Set the Opportunity's Amount to 50000
+    }
+        upsert opportunities; // Upsert the opportunities List so that records are either updated or created
+    }
     /**
      * Question 8
      * Insert or update opportunities from list of names.
@@ -154,9 +160,38 @@ public with sharing class DMLOperations {
      * @param oppNames The list of Opportunity names.
      */
     public static void upsertOpportunities(String accountName, List<String> oppNames) {
-        // Loop through each Opportunity name
-            // Create an Opportunity with the given name
-            // Add the Opportunity to the list
+        
+        List<Account> accList = [SELECT Id FROM Account WHERE Name = :accountName LIMIT 1];
+        Account acc = accList.isEmpty() ? new Account(Name = accountName) : accList[0]; 
+
+        upsert acc; 
+
+        List<Opportunity> existingOpps = [SELECT Id, Name FROM Opportunity WHERE Name IN : oppNames and AccountId = : acc.id];
+        Set<String> existingOppNames = new Set<String>();
+
+        for (Opportunity opp : existingOpps){
+            existingOppNames.add(opp.Name); 
+        }
+
+        List<Opportunity> opportunityList = new List<Opportunity>();
+
+        for (String oppName : oppNames){
+
+        if (!existingOppNames.contains(oppName)){
+            Opportunity newOpp = new Opportunity (// Create an Opportunity with the given name
+            Name = oppName, 
+            AccountId = acc.Id, 
+            StageName = 'Qualification', 
+            CloseDate = Date.today().addMonths(3), 
+            Amount = 50000);
+    
+            opportunityList.add(newOpp); // Add the Opportunity to the list
+
+    }
+    }
+        if (!OpportunityList.isEmpty()) {
+            upsert opportunityList; 
+    }
     }
     
     /**
