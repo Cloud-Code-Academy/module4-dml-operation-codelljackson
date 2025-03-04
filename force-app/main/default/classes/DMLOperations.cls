@@ -30,6 +30,7 @@ public with sharing class DMLOperations {
      * @return The Id of the newly created Account.
      */
     public static Id insertNewAccount() {
+        
         Account myAccount = new Account();// Create a new Account instance
         myAccount.Name = 'Codell Account'; 
 
@@ -142,7 +143,7 @@ public with sharing class DMLOperations {
     public static void upsertOpportunityList(List<Opportunity> opportunities) {
 
         for (Opportunity myOpportunity : opportunities) {// Loop through each Opportunity in the list
-            
+        
         myOpportunity.StageName = 'Qualification'; // Set the Opportunity's Stage to Qualification
         myOpportunity.CloseDate = Date.today().addMonths(3);// Set the Opportunity's Close Date to 3 months from today
         myOpportunity.Amount = 50000;// Set the Opportunity's Amount to 50000
@@ -216,8 +217,8 @@ public with sharing class DMLOperations {
             myAccount = new Account(Name = accountName, Description = 'New Account'); // otherwise, create a new Account and set the description
     }
 		upsert myAccount; // Upsert the Account
+        return myAccount;
 
-		return myAccount;
 	}
 
     /**
@@ -254,8 +255,8 @@ public with sharing class DMLOperations {
 
             leadList.add(myLead);
         }
-            insert leadList; // Insert the Leads
-            delete leadList;// Delete the Leads
+        insert leadList; // Insert the Leads
+        delete leadList;// Delete the Leads
     }
     
 
